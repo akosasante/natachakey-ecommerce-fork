@@ -1,6 +1,4 @@
-## Hosted Project
-
-[E-Commerce API Heroku URL](https://e-commerce-api-10.herokuapp.com/)
+Steps taken to develop this project- backend (node.js)
 
 #### Setup Basic Express Server
 
