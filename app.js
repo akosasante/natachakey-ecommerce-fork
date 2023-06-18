@@ -41,7 +41,7 @@ app.use(cors());
 app.use(xss());
 app.use(mongoSanitize());
 
-//app.use(morgan('tiny')); //log  in terminal every request methode + statuscode
+app.use(morgan('combined')); //log  in terminal every request methode + statuscode
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET)); //access cookies coming back from the browser- with each request the browser will send cookie + we're signing cookies with jwt secret
 app.use(express.static('./public'));

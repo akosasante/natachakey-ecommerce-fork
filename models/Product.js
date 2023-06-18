@@ -9,7 +9,7 @@ const ProductSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
-      required: [true, 'Please provide product price'],
+      required: [true, 'Please provide product price'], // AKOSREVIEW: A little bit counterintuitive to have required field AND default
       default: 0,
     },
     description: {
@@ -68,7 +68,7 @@ const ProductSchema = new mongoose.Schema(
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } } //timestamps provides fields of createdAt , updatedAt... and exact time, //{ toJSON: { virtuals: true }, toObject: { virtuals: true } } is used in Mongoose to enable virtual fields to be included when converting a document to JSON or a plain JavaScript object
 );
-
+// AKOSREVIEW - I'm curious if the course explained why/when to use a virtual field vs the approach used for the user ref
 //this set up helps to get all the reviews about specific product without directly storing them in  Product.js. by ENABLING VIRTUAL FIELDS //see productController.js line 22
 // it looks for matches betweeN localField (_id  of the product  in db) and foreignField (line26-27 in Review.js) AND SETS IT AS A VIRTUAL FIELD reviews
 ProductSchema.virtual('reviews', {

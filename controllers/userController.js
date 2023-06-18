@@ -1,29 +1,32 @@
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-const { createTokenUser, attachCookiesToResponse, checkPermissions } = require('../utils');
+const { createTokenUser, attachCookiesToResponse, checkPermissions } = require(
+  '../utils');
 
 // only admins should be able to see all users + we remove password from the response
+// AKOSREVIEW + we only return non-admin users
 const getAllUsers = async (req, res) => {
   console.log(req.user); //we pass to the browser object with name, userId ad role - check authentication.js line 13
-  const users = await User.find({ role: 'user' }).select('-password');
+  // AKOSREVIEW we can probaby also remove __v
+  const users = await User.find({ role: 'user' }).select('-password -__v');
   res.status(StatusCodes.OK).json({ users });
 };
 
-
 const getSingleUser = async (req, res) => {
-    const user = await User.findOne({ _id: req.params.id }).select('-password');
-    if (!user) {
-      throw new CustomError.NotFoundError(`No user with id : ${req.params.id}`);
-    }
-    checkPermissions(req.user, user._id) //we pass user object that is in the request and id property  in a database of the user we are requesting - see line 15
-    res.status(StatusCodes.OK).json({ user });
-  };
+  const user = await User.findOne({ _id: req.params.id }).select('-password');
+  if (!user) {
+    throw new CustomError.NotFoundError(`No user with id : ${req.params.id}`);
+  }
 
+  checkPermissions(req.user, user._id); //we pass user object that is in the request and id property  in a database of the user we are requesting - see line 15
+  res.status(StatusCodes.OK).json({ user });
+};
 
 const showCurrentUser = async (req, res) => {
   //set up user objest and set it eql to req.user
   //here we dont query database, we are getting user we placed in token
+  // AKOSREVIEW maybe don't return expiry?
   res.status(StatusCodes.OK).json({ user: req.user });
 };
 
@@ -31,6 +34,8 @@ const showCurrentUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { email, name } = req.body; // we are looking for name, email in req.body
+
+  // AKOSREVIEW is it intentional this only fails if both are missing?
   if (!email || !name) {
     throw new CustomError.BadRequestError('Please provide all values');
   }

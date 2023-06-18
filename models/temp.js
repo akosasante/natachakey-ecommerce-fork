@@ -1,10 +1,6 @@
 //aggregation pipeline from mongo
 
-
-import { MongoClient } from 'mongodb';
-import {
-  ObjectId
-} from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 /*
  * Requires the MongoDB Node.js Driver
@@ -14,24 +10,24 @@ import {
 const agg = [
   {
     '$match': {
-      'product': new ObjectId('64804bb82f146aaa74a85c3a')
-    }
+      'product': new ObjectId('64804bb82f146aaa74a85c3a'),
+    },
   }, {
     '$group': {
-      '_id': null, 
+      '_id': null,
       'averageRating': {
-        '$avg': '$rating'
-      }, 
+        '$avg': '$rating',
+      },
       'numOfReviews': {
-        '$sum': 1
-      }
-    }
-  }
+        '$sum': 1,
+      },
+    },
+  },
 ];
 
 const client = await MongoClient.connect(
   '',
-  { useNewUrlParser: true, useUnifiedTopology: true }
+  { useNewUrlParser: true, useUnifiedTopology: true },
 );
 const coll = client.db('ECOMMERCE').collection('reviews');
 const cursor = coll.aggregate(agg);

@@ -41,6 +41,7 @@ UserSchema.pre('save', async function () {
 });
 
 UserSchema.methods.comparePassword = async function (candidatePassword) {
+  // AKOSREVIEW: could just return the expression directly
   const isMatch = await bcrypt.compare(candidatePassword, this.password);
   return isMatch; //true
 };

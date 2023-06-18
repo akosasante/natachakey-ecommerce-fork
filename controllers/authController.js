@@ -10,7 +10,7 @@ const register = async (req, res) => {
   const emailAlreadyExists = await User.findOne({ email });
   if (emailAlreadyExists) {
     throw new CustomError.BadRequestError(
-      'Email already exists, try another one'
+      'Email already exists, try another one',
     );
   }
 
@@ -57,10 +57,9 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   //remove cookie with the name 'token' defined in jwt.js in attachCookiesToResponse- line 22;
   // with 'logout' we change the value of the token, also could pass an empty string
-  res.cookie('token', 'logout', {
-    httpOnly: true,
-    expires: new Date(Date.now()), //remove the cookie
-  });
+
+  // http://expressjs.com/en/5x/api.html#res.clearCookie
+  res.clearCookie('token');
   res.status(StatusCodes.OK).json({ msg: 'user logged out' });
 };
 

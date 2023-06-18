@@ -17,13 +17,15 @@ const createOrder = async (req, res) => {
   }
   if (!tax || !shippingFee) {
     throw new CustomError.BadRequestError(
-      'Please provide tax and shipping fee'
+      'Please provide tax and shipping fee',
     );
   }
 
   let orderItems = [];
   let subtotal = 0;
   //if there are items in cartItems, we set up a loop
+
+  // AKOSREVIEW: Show examples of other ways to do this with *.map, *.reduce, or .forEach
   for (const item of cartItems) {
     const dbProduct = await Product.findOne({ _id: item.product }); // check if product exists in db -so  we get data from database, not relying on frontend
     if (!dbProduct) {
@@ -40,6 +42,7 @@ const createOrder = async (req, res) => {
       product: _id,
     };
     //add item to order
+    // AKOSREVIEW, in this case, could also just do push since we're mutating the original array anyway
     orderItems = [...orderItems, singleOrderItem]; //whatever items we have.. with each iteration add new  singleOrderItem
     //calculate subtotal- with each iteration add the final price of every iterated product (multiply amount*price for every iterated product)
     subtotal += item.amount * price;

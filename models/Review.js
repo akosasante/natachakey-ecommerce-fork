@@ -44,6 +44,7 @@ ReviewSchema.statics.calculateAverageRating = async function (productId) {
     { $match: { product: productId } }, //1stage Match reviews with the specified productId
     {
       $group: { //2 stage- Groups the matched reviews together - this is what we return
+        // AKOSREVIEW: reword/explaining group id
         _id: null, // this is id of the group- can be product id, rating, etc //we use null or _id: '$product' // but  if we want to calculate how many reviews we have with specific rating for this product: _id : '$rating'  //check syntax  + add: ,amount:{$sum:1}- see code below line 81
         averageRating: { $avg: '$rating' }, // Calculate average rating  using the $avg aggregation operator. 
         numOfReviews: { $sum: 1 }, // Count the number of reviews using the $sum aggregation operator.
@@ -67,7 +68,8 @@ ReviewSchema.statics.calculateAverageRating = async function (productId) {
 //post save hook called- on save()
 ReviewSchema.post('save', async function () {
   // we are calling the static method calculateAverageRating that schema has:
-  await this.constructor.calculateAverageRating(this.product); //with this. we access actual schema
+  // AKOSREVIEW: If you define the model before epxorting, then you could also do Review.calculateAverageRating
+  await this.constructor.calculateAverageRating(this.product); //with this. we access actual schema // AKOSREVIEW this == this instance
 });
 
 //post remove hook called- on remove()

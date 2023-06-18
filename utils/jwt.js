@@ -17,6 +17,7 @@ const isTokenValid = ({ token }) => {
 const attachCookiesToResponse = ({ res, user }) => {
   const token = createJWT({ payload: user });
 
+  // AKOSREVIEW: It would probably make sense to expire the cookie and the token at the same time
   const oneDay = 1000 * 60 * 60 * 24; //1d because we set previously JWT_LIFETIME=1d
   //set up cookie for storing token
   res.cookie('token', token, {

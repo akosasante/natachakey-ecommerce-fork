@@ -20,7 +20,7 @@ const createReview = async (req, res) => {
 
   if (alreadySubmitted) {
     throw new CustomError.BadRequestError(
-      'Already submitted review for this product'
+      'Already submitted review for this product',
     );
   }
   req.body.user = req.user.userId; //attach user property (set it equal to req.user.userId) onto req.body ;  req.user.userId came from req.user = { name, userId, role, exp }; //from the object we pass to the browser with name, userId role, exp- check authentication.js line 14 // so we are able to see in postman which user makes this post request- "user": "647dcc11ffdc226f332b7847"
@@ -34,6 +34,7 @@ const getAllReviews = async (req, res) => {
     path: 'product', //we pass what we want to reference //line 23 in Review.js
     select: 'name company price', //and what properties we want to get from product model
   });
+  // AKOSREVIEW - curious why the following is commented out?
   // .populate({
   //   path: 'user', //line 28 in Review.js
   //   select: 'name ',//and what properties we want to get from user model
@@ -58,6 +59,7 @@ const getSingleReview = async (req, res) => {
 
 const updateReview = async (req, res) => {
   const { id: reviewId } = req.params; //using object destructuring to extract the id property from the params object of the req (request) object and assign it to the reviewId variable.
+  // AKOSREVIEW - what if I only wanted to update one of these things?
   const { rating, title, comment } = req.body; //getting access to rating, title, comment from req,body (from frontend)
   const review = await Review.findOne({ _id: reviewId }); //look for specific review match between id in url and _id in db
   //check if there is no review- throw an error
@@ -100,5 +102,5 @@ module.exports = {
   getSingleReview,
   updateReview,
   deleteReview,
- // getSingleProductReviews,
+  // getSingleProductReviews,
 };

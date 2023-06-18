@@ -19,8 +19,9 @@ const getAllProducts = async (req, res) => {
 const getSingleProduct = async (req, res) => {
   //id of the product is lokated in req.params
   const { id: productId } = req.params; //This extracts the id parameter from the request's URL parameters and assigns it to the productId variable.
-  const product = await Product.findOne({ _id: productId }) // find a product in the database with the specified _id that matches productId or id from req.params
-  .populate('reviews') //get all reviews for this product using virtual field reviews - set in Product.js line 70
+  const product = await Product.findOne(
+    { _id: productId }) // find a product in the database with the specified _id that matches productId or id from req.params
+    .populate('reviews'); //get all reviews for this product using virtual field reviews - set in Product.js line 70
   if (!product) {
     throw new CustomError.NotFoundError(`No product with id ${productId}`);
   }
@@ -48,7 +49,8 @@ const deleteProduct = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: 'Success! Product removed!' });
 };
 const uploadImage = async (req, res) => {
-  // console.log(req.files);
+  console.log(req.files);
+  // AKOSREVIEW: We should do a check for req.files.image existing too
   if (!req.files) {
     throw new CustomError.BadRequestError('No file uploaded');
   }
@@ -62,13 +64,13 @@ const uploadImage = async (req, res) => {
 
   if (productImage.size > maxSize) {
     throw new CustomError.BadRequestError(
-      'Please upload image smaller than 1MB'
+      'Please upload image smaller than 1MB',
     );
   }
 
   const imagePath = path.join(
     __dirname,
-    '../public/uploads/' + `${productImage.name}`
+    '../public/uploads/' + `${productImage.name}`,
   );
   await productImage.mv(imagePath);
   res.status(StatusCodes.OK).json({ image: `/uploads/${productImage.name}` });

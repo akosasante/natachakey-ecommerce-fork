@@ -1,5 +1,7 @@
+// AKOSREVIEW - is this being used
 const CustomError = require('../errors');
-const { isTokenValid } = require('../utils/jwt');
+// AKOSREVIEW could shorten import
+const { isTokenValid } = require('../utils');
 
 const authenticateUser = async (req, res, next) => {
   let token;
@@ -9,9 +11,10 @@ const authenticateUser = async (req, res, next) => {
     token = authHeader.split(' ')[1];
   }
   // check cookies
-  else if (req.cookies.token) {
-    token = req.cookies.token;
-  }
+  else
+    if (req.cookies.token) {
+      token = req.cookies.token;
+    }
 
   if (!token) {
     throw new CustomError.UnauthenticatedError('Authentication invalid');

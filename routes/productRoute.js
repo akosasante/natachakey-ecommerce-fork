@@ -16,6 +16,7 @@ const {
 
 //const { getSingleProductReviews } = require('../controllers/reviewController');
 
+// AKOSREVIEW - parens around middleware is fine but not needed
 router
   .route('/')
   .post([authenticateUser, authorizePermissions('admin')], createProduct) //only admin can create product

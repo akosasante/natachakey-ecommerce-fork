@@ -11,6 +11,7 @@ const authenticateUser = async (req, res, next) => {
   }
   try {
     const { name, userId, role, exp } = isTokenValid({ token }); // we destructure token- and take name, userId, role to attach it to req.user- we can log it in userController.js
+    // AKOSREVIEW: We're not passing to the browser here, just adding it to the req object under the "user" field/property, to be used in any following middleware or controllers
     req.user = { name, userId, role, exp }; //we pass to the browser object with name, userId ad role
     next();
   } catch (error) {
@@ -23,12 +24,12 @@ const authenticateUser = async (req, res, next) => {
 const authorizePermissions = (...roles) => {
   return (req, res, next) => {
     //checking if the user currently trying to access the route (req.user.role) matches any role that I have in an array  created by (...roles)
-    if (!roles.includes(req.user.role)){
+    if (!roles.includes(req.user.role)) {
       throw new CustomError.UnauthorizedError(
-        'Unauthorized to access this route'
+        'Unauthorized to access this route',
       );
-    };
-  next(); //proceed to next middleware- in this case get all users route
+    }
+    next(); //proceed to next middleware- in this case get all users route
   };
 };
 
