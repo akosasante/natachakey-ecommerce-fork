@@ -1,6 +1,6 @@
 require('dotenv').config();
 require('express-async-errors');
-
+const path = require('path');
 const express = require('express');
 const app = express();
 
@@ -54,9 +54,9 @@ app.use(fileUpload());
 //   res.send('ecommerce api');
 // });
 
-// app.get('/', (req, res) => {
-//   res.send('ecommerce api');
-// });
+app.get('/docs', (req, res) => {
+  res.sendFile(path.join(__dirname, 'docs.html'));
+});
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);

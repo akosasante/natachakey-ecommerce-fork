@@ -10,8 +10,8 @@ const authenticateUser = async (req, res, next) => {
     throw new CustomError.UnauthenticatedError('Authentication invalid');
   }
   try {
-    const { name, userId, role, exp } = isTokenValid({ token }); // we destructure token- and take name, userId, role to attach it to req.user- we can log it in userController.js
-    req.user = { name, userId, role, exp }; //we pass to the browser object with name, userId ad role
+    const { name, userId, role } = isTokenValid({ token }); // we destructure token- and take name, userId, role to attach it to req.user- we can log it in userController.js
+    req.user = { name, userId, role }; //we add  name, userId and role to the req object under the "user" field/property, to be used in any following middleware or controllers
     next();
   } catch (error) {
     throw new CustomError.UnauthenticatedError('Authentication invalid');

@@ -24,6 +24,8 @@ const getSingleUser = async (req, res) => {
 const showCurrentUser = async (req, res) => {
   //set up user objest and set it eql to req.user
   //here we dont query database, we are getting user we placed in token
+  console.log(req.user);
+  
   res.status(StatusCodes.OK).json({ user: req.user });
 };
 
@@ -31,7 +33,7 @@ const showCurrentUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const { email, name } = req.body; // we are looking for name, email in req.body
-  if (!email || !name) {
+  if (!email && !name) {
     throw new CustomError.BadRequestError('Please provide all values');
   }
 

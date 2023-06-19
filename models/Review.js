@@ -44,7 +44,8 @@ ReviewSchema.statics.calculateAverageRating = async function (productId) {
     { $match: { product: productId } }, //1stage Match reviews with the specified productId
     {
       $group: { //2 stage- Groups the matched reviews together - this is what we return
-        _id: null, // this is id of the group- can be product id, rating, etc //we use null or _id: '$product' // but  if we want to calculate how many reviews we have with specific rating for this product: _id : '$rating'  //check syntax  + add: ,amount:{$sum:1}- see code below line 81
+        // lines 48-50: !!! When using the $group aggregator, the _id field tells Mongo what to group the results by. If we pass in null or a constant value (like 1), it will just group all the results together. In this case, we've already filtered the results in the first aggregate step to give us just the reviews for a particualr product; we're then grouping together all of those reviews, and doing some calculations / "aggregations" on those groups (to get the average rating and number of reviews).
+        _id: null, //  id of the group- can be product id, rating, etc //we use null or _id: '$product' // but  if we want to calculate how many reviews we have with specific rating for this product: _id : '$rating'  //check syntax  + add: ,amount:{$sum:1}- see code below line 81
         averageRating: { $avg: '$rating' }, // Calculate average rating  using the $avg aggregation operator. 
         numOfReviews: { $sum: 1 }, // Count the number of reviews using the $sum aggregation operator.
       },
@@ -64,18 +65,39 @@ ReviewSchema.statics.calculateAverageRating = async function (productId) {
   }
 };
 
+
+//1 OPTION
 //post save hook called- on save()
+// ReviewSchema.post('save', async function () {
+//   // we are calling the static method calculateAverageRating that schema has:
+//   await this.constructor.calculateAverageRating(this.product); //with this. we access actual schema
+// });
+
+// //post remove hook called- on remove()
+// ReviewSchema.post('remove', async function () {
+//   await this.constructor.calculateAverageRating(this.product); // we are pointing product id in schema, called product- see line 26
+// });
+
+//module.exports = mongoose.model('Review', ReviewSchema);
+
+
+
+//2 OPTION
+const ReviewModel = mongoose.model('Review', ReviewSchema);
+
 ReviewSchema.post('save', async function () {
-  // we are calling the static method calculateAverageRating that schema has:
-  await this.constructor.calculateAverageRating(this.product); //with this. we access actual schema
+  await ReviewModel.calculateAverageRating(this.product); //with this. we access actual schema // AKOSREVIEW this == this instance
 });
 
-//post remove hook called- on remove()
+
 ReviewSchema.post('remove', async function () {
-  await this.constructor.calculateAverageRating(this.product); // we are pointing product id in schema, called product- see line 26
+  await ReviewModel.calculateAverageRating(this.product); // we are pointing product id in schema, called product- see line 26
 });
 
-module.exports = mongoose.model('Review', ReviewSchema);
+module.exports = ReviewModel
+
+
+
 
 
 //lines 45-51- if we want  to calculate how many reviews we have with specific rating for this product

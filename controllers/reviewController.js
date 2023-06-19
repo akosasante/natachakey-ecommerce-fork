@@ -58,8 +58,14 @@ const getSingleReview = async (req, res) => {
 
 const updateReview = async (req, res) => {
   const { id: reviewId } = req.params; //using object destructuring to extract the id property from the params object of the req (request) object and assign it to the reviewId variable.
-  const { rating, title, comment } = req.body; //getting access to rating, title, comment from req,body (from frontend)
-  const review = await Review.findOne({ _id: reviewId }); //look for specific review match between id in url and _id in db
+//const { rating, title, comment } = req.body; //getting access to rating, title, comment from req,body (from frontend)
+
+const review = await Review.findOne({ _id: reviewId }); //look for specific review match between id in url and _id in db
+  //console.log(review);
+const rating = req.body.hasOwnProperty('rating') ? req.body.rating  :review.rating
+const title = req.body.hasOwnProperty('title') ? req.body.title  :review.title
+const comment = req.body.hasOwnProperty('comment') ? req.body.comment  :review.comment
+
   //check if there is no review- throw an error
   if (!review) {
     throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
@@ -71,6 +77,7 @@ const updateReview = async (req, res) => {
   await review.save();
   res.status(StatusCodes.OK).json({ review });
 };
+
 
 const deleteReview = async (req, res) => {
   const { id: reviewId } = req.params; //using object destructuring to extract the id property from the params object of the req (request) object and assign it to the reviewId variable.

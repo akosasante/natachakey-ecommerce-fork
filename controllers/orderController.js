@@ -21,6 +21,10 @@ const createOrder = async (req, res) => {
     );
   }
 
+  
+
+
+
   let orderItems = [];
   let subtotal = 0;
   //if there are items in cartItems, we set up a loop
@@ -39,8 +43,11 @@ const createOrder = async (req, res) => {
       image,
       product: _id,
     };
-    //add item to order
-    orderItems = [...orderItems, singleOrderItem]; //whatever items we have.. with each iteration add new  singleOrderItem
+    //add item to order -OPTION 1
+    //orderItems = [...orderItems, singleOrderItem]; //whatever items we have.. with each iteration add new  singleOrderItem
+    orderItems.push(singleOrderItem) // OPTION 2 : to  add the single order item to the order items list each time.
+    
+    
     //calculate subtotal- with each iteration add the final price of every iterated product (multiply amount*price for every iterated product)
     subtotal += item.amount * price;
   }

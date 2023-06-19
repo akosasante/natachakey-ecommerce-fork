@@ -17,10 +17,10 @@ const getAllProducts = async (req, res) => {
 //GET REVIEWS FOR SINGLE PRODUCT- OPTION 1
 //mongoose virtuals to get all the reviews for this product
 const getSingleProduct = async (req, res) => {
-  //id of the product is lokated in req.params
+  //id of the product is located in req.params
   const { id: productId } = req.params; //This extracts the id parameter from the request's URL parameters and assigns it to the productId variable.
   const product = await Product.findOne({ _id: productId }) // find a product in the database with the specified _id that matches productId or id from req.params
-  .populate('reviews') //get all reviews for this product using virtual field reviews - set in Product.js line 70
+    .populate('reviews'); //get all reviews for this product using virtual field reviews - set in Product.js line 70
   if (!product) {
     throw new CustomError.NotFoundError(`No product with id ${productId}`);
   }
@@ -54,7 +54,7 @@ const uploadImage = async (req, res) => {
   }
   //in req.files we have image property, we assign it to a const productImage
   const productImage = req.files.image;
-  if (!productImage.mimetype.startsWith('image')) {
+  if (!req.files.image || !productImage.mimetype.startsWith('image')) {
     throw new CustomError.BadRequestError('Please upload image');
   }
 
