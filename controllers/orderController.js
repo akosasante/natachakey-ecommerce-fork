@@ -21,34 +21,44 @@ const createOrder = async (req, res) => {
     );
   }
 
-  let orderItems = [];
-  let subtotal = 0;
-  //if there are items in cartItems, we set up a loop
+  const initialValue = { subtotal: 0, orderItems: [] };
 
-  // AKOSREVIEW: Show examples of other ways to do this with *.map, *.reduce, or .forEach
-  for (const item of cartItems) {
-    const dbProduct = await Product.findOne({ _id: item.product }); // check if product exists in db -so  we get data from database, not relying on frontend
-    if (!dbProduct) {
-      throw new CustomError.NotFoundError(`No product with id ${item.product}`);
-    }
+  const { subtotal: subtotal, orderItems: orderItems } = await cartItems.reduce(
+    async (resultsMap, item) => {
+      // Loop through each item in `cartItems` array (if the array is empty, this will just be skipped)
+      // Each iteration, item will be the next item in the array. resultsMap will be whatever we return at the end of the reduce function, and the first time it will be equal to `initialValue` (because we pass that to reduce as the second argument on line 52)
 
-    const { name, price, image, _id } = dbProduct;
-    //console.log(name, price, image);
-    const singleOrderItem = {
-      amount: item.amount,
-      name,
-      price,
-      image,
-      product: _id,
-    };
-    //add item to order
-    // AKOSREVIEW, in this case, could also just do push since we're mutating the original array anyway
-    orderItems = [...orderItems, singleOrderItem]; //whatever items we have.. with each iteration add new  singleOrderItem
-    //calculate subtotal- with each iteration add the final price of every iterated product (multiply amount*price for every iterated product)
-    subtotal += item.amount * price;
-  }
-  //console.log(orderItems);
-  //console.log(subtotal);
+      const dbProduct = await Product.findOne({ _id: item.product });
+      console.log(`looping through: resultsMap=${JSON.stringify(
+        await resultsMap)} | item=${JSON.stringify(
+        item)} | dbProduct=${dbProduct}`);
+
+      if (!dbProduct) {
+        throw new CustomError.NotFoundError(
+          `No product with id ${item.product}`);
+      }
+
+      const { name, price, image, _id } = dbProduct;
+      const singleOrderItem = {
+        amount: item.amount,
+        name,
+        price,
+        image,
+        product: _id,
+      };
+
+      // Because resultsMap was returned in an async function; it is wrapped in a Promise; so we need to await before we can edit its fields. Node is working on each item in the cartItems array, in _parallel_ to save time
+      resultsMap = await resultsMap;
+
+      resultsMap.orderItems = [...resultsMap.orderItems, singleOrderItem];
+      resultsMap.subtotal += item.amount * price;
+
+      // We have to return resultsMap so that the reduce function knows to use the updated values for the next item in the list
+      return resultsMap;
+    }, initialValue);
+
+  // console.log(orderItems);
+  // console.log(subtotal);
 
   //calculate total
   const total = tax + shippingFee + subtotal;
