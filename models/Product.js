@@ -10,7 +10,6 @@ const ProductSchema = new mongoose.Schema(
     price: {
       type: Number,
       required: [true, 'Please provide product price'],
-
     },
     description: {
       type: String,
@@ -24,20 +23,15 @@ const ProductSchema = new mongoose.Schema(
     category: {
       type: String,
       required: [true, 'Please provide product category'],
-      enum: ['office', 'kitchen', 'bedroom'],
+      enum: ['necklace', 'earrings', 'ring'],
     },
     company: {
       type: String,
       required: [true, 'Please provide company'],
       enum: {
-        values: ['ikea', 'liddy', 'marcos'],
+        values: ['Suarez', 'Tiffany', 'Cartier'],
         message: '{VALUE} is not supported', // we can access the values the user is providing
       },
-    },
-    colors: {
-      type: [String],
-      default: ['#222'],
-      required: true,
     },
     featured: {
       type: Boolean,
@@ -56,7 +50,7 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    numOfReviews:{
+    numOfReviews: {
       type: Number,
       default: 0,
     },
@@ -80,9 +74,10 @@ ProductSchema.virtual('reviews', {
   //match:{rating:1} show only reviews with rating eql to 1 etc.
 });
 
-ProductSchema.pre('remove', async function(next){ //delete all the reviews  in Review model associated with this particular product
-  await this.model('Review').deleteMany({product: this._id}) // product is the propery of the Review model that references the product : this._id from db - id of THIS document
-})
+ProductSchema.pre('remove', async function (next) {
+  //delete all the reviews  in Review model associated with this particular product
+  await this.model('Review').deleteMany({ product: this._id }); // product is the propery of the Review model that references the product : this._id from db - id of THIS document
+});
 
 module.exports = mongoose.model('Product', ProductSchema);
 
