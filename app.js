@@ -37,7 +37,7 @@ app.use(
 );
 
 app.use(helmet());
-app.use(cors());
+app.use(cors({ origin: ["http://localhost:3000", "https://deployed_to_netlify_url.com"], credentials: true })); //CHAGE TO REAL URL ON NETLIFY
 app.use(xss());
 app.use(mongoSanitize());
 
