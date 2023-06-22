@@ -57,25 +57,82 @@ const getSingleReview = async (req, res) => {
 };
 
 const updateReview = async (req, res) => {
-  const { id: reviewId } = req.params; //using object destructuring to extract the id property from the params object of the req (request) object and assign it to the reviewId variable.
-//const { rating, title, comment } = req.body; //getting access to rating, title, comment from req,body (from frontend)
+  //OPTION 1
+//   const { id: reviewId } = req.params; //using object destructuring to extract the id property from the params object of the req (request) object and assign it to the reviewId variable.
+// //const { rating, title, comment } = req.body; //getting access to rating, title, comment from req,body (from frontend)
 
-const review = await Review.findOne({ _id: reviewId }); //look for specific review match between id in url and _id in db
-  //console.log(review);
-const rating = req.body.hasOwnProperty('rating') ? req.body.rating  :review.rating
-const title = req.body.hasOwnProperty('title') ? req.body.title  :review.title
-const comment = req.body.hasOwnProperty('comment') ? req.body.comment  :review.comment
+// const review = await Review.findOne({ _id: reviewId }); //look for specific review match between id in url and _id in db
+//   //console.log(review);
+// const rating = req.body.hasOwnProperty('rating') ? req.body.rating  :review.rating
+// const title = req.body.hasOwnProperty('title') ? req.body.title  :review.title
+// const comment = req.body.hasOwnProperty('comment') ? req.body.comment  :review.comment
 
-  //check if there is no review- throw an error
-  if (!review) {
-    throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
-  }
-  checkPermissions(req.user, review.user); //see explanation below in deleteReview
-  review.rating = rating;
-  review.title = title;
-  review.comment = comment;
-  await review.save();
-  res.status(StatusCodes.OK).json({ review });
+//   //check if there is no review- throw an error
+//   if (!review) {
+//     throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
+//   }
+//   checkPermissions(req.user, review.user); //see explanation below in deleteReview
+//   review.rating = rating;
+//   review.title = title;
+//   review.comment = comment;
+//   await review.save();
+//   res.status(StatusCodes.OK).json({ review });
+
+//OPTION 2
+const { id: reviewId } = req.params; //TAKE ID FROM REQ.PARAMS AND ASSIGN IT TO REVIEWiD  
+const { rating, title, comment } = req.body;
+const review = await Review.findOne({ _id: reviewId });
+
+if (!review) {
+  throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
+}
+
+checkPermissions(req.user, review.user);
+review.rating = req.body.hasOwnProperty('rating') ? req.body.rating : review.rating
+review.title = req.body.hasOwnProperty('title') ? req.body.title : review.title
+review.comment = req.body.hasOwnProperty('comment') ? req.body.rating : review.comment
+
+await review.save();
+res.status(StatusCodes.OK).json({ review });
+
+//option 3
+//When we do the object destructuring (const { rating, title, comment } = req.body;), then any fields that didn't exist in req.body will just be saved to the variables on the left-hand-side as undefined.
+// const { rating, title, comment } = req.body;
+// const review = await Review.findOne({ _id: reviewId });
+
+// if (!review) {
+//   throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
+// }
+
+// checkPermissions(req.user, review.user);
+
+// // Assign values from request to the review; fall back to the existing values if the request did not provide such a value
+// review.rating = rating || review.rating;
+// review.title = title || review.title;
+// review.comment = comment || review.comment;
+
+// await review.save();
+// res.status(StatusCodes.OK).json({ review });
+//This says update the review.rating field to the rating variable OR if that's undefined/null, then to the existing review.rating value. 
+
+//option 4 
+// const { rating, title, comment } = req.body;
+// const review = await Review.findOne({ _id: reviewId });
+
+// if (!review) {
+//   throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
+// }
+
+// checkPermissions(req.user, review.user);
+
+// // Only assign updated values if they were given in the request:
+// if (rating) { review.rating = rating }
+// if (title) { review.title = title }
+// if (comment) { review.comment = comment }
+
+// await review.save();
+// res.status(StatusCodes.OK).json({ review });
+
 };
 
 
