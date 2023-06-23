@@ -55,6 +55,8 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
+  const oneDay = 1000 * 60 * 60 * 24;
+  
   res.clearCookie('token', {
     httpOnly: true,
     expires: new Date(Date.now() + oneDay),
