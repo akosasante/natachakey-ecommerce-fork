@@ -23,6 +23,7 @@ const oneDay = 1000 * 60 * 60 * 24; //1d because we set previously JWT_LIFETIME=
     expires: new Date(Date.now() + oneDay),
     secure: process.env.NODE_ENV === 'production', //secure:Boolean	Marks the cookie to be used with HTTPS only.- we set it up to be applied only in production
     signed: true,
+    sameSite: 'none',
   });
 };
 
