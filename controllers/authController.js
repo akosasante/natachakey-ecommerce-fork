@@ -55,16 +55,13 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  //remove cookie with the name 'token' defined in jwt.js in attachCookiesToResponse- line 22;
-  // with 'logout' we change the value of the token, also could pass an empty string
-  //OPTION 1
-  // res.cookie('token', 'logout', {
-  //   httpOnly: true,
-  //   expires: new Date(Date.now()), //remove the cookie
-  // });
-  //OPTION 2- BETTER ONE
-// http://expressjs.com/en/5x/api.html#res.clearCookie
-  res.clearCookie('token');
+  res.clearCookie('token', {
+    httpOnly: true,
+    expires: new Date(Date.now() + oneDay),
+    secure: process.env.NODE_ENV === 'production', //secure:Boolean	Marks the cookie to be used with HTTPS only.- we set it up to be applied only in production
+    signed: true,
+    sameSite: 'none'
+  });
   res.status(StatusCodes.OK).json({ msg: 'user logged out' });
 };
 
