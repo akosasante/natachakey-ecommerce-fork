@@ -48,6 +48,9 @@ const deleteProduct = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: 'Success! Product removed!' });
 };
 const uploadImage = async (req, res) => {
+
+
+
   // console.log(req.files);
   if (!req.files) {
     throw new CustomError.BadRequestError('No file uploaded');
@@ -71,7 +74,8 @@ const uploadImage = async (req, res) => {
     '../public/uploads/' + `${productImage.name}`
   );
   await productImage.mv(imagePath);
-  res.status(StatusCodes.OK).json({ image: `/uploads/${productImage.name}` });
+  res.status(StatusCodes.OK).json({ image: `https://ecommerce-6kwa.onrender.com/uploads/${productImage.name}` });
+  //res.status(StatusCodes.OK).json({ image: `/uploads/${productImage.name}` });
 };
 
 module.exports = {
@@ -82,3 +86,31 @@ module.exports = {
   deleteProduct,
   uploadImage,
 };
+
+//working code
+// const uploadImage = async (req, res) => {
+//   // console.log(req.files);
+//   if (!req.files) {
+//     throw new CustomError.BadRequestError('No file uploaded');
+//   }
+//   //in req.files we have image property, we assign it to a const productImage
+//   const productImage = req.files.image;
+//   if (!req.files.image || !productImage.mimetype.startsWith('image')) {
+//     throw new CustomError.BadRequestError('Please upload image');
+//   }
+
+//   const maxSize = 1024 * 1024;
+
+//   if (productImage.size > maxSize) {
+//     throw new CustomError.BadRequestError(
+//       'Please upload image smaller than 1MB'
+//     );
+//   }
+
+//   const imagePath = path.join(
+//     __dirname,
+//     '../public/uploads/' + `${productImage.name}`
+//   );
+//   await productImage.mv(imagePath);
+//   res.status(StatusCodes.OK).json({ image: `/uploads/${productImage.name}` });
+// };
