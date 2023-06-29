@@ -68,33 +68,33 @@ ReviewSchema.statics.calculateAverageRating = async function (productId) {
 
 //1 OPTION
 //post save hook called- on save()
-// ReviewSchema.post('save', async function () {
-//   // we are calling the static method calculateAverageRating that schema has:
-//   await this.constructor.calculateAverageRating(this.product); //with this. we access actual schema
-// });
-
-// //post remove hook called- on remove()
-// ReviewSchema.post('remove', async function () {
-//   await this.constructor.calculateAverageRating(this.product); // we are pointing product id in schema, called product- see line 26
-// });
-
-//module.exports = mongoose.model('Review', ReviewSchema);
-
-
-
-//2 OPTION
-const ReviewModel = mongoose.model('Review', ReviewSchema);
-
 ReviewSchema.post('save', async function () {
-  await ReviewModel.calculateAverageRating(this.product); //with this. we access actual schema // AKOSREVIEW this == this instance
+  // we are calling the static method calculateAverageRating that schema has:
+  await this.constructor.calculateAverageRating(this.product); //with this. we access actual schema
 });
 
-
+//post remove hook called- on remove()
 ReviewSchema.post('remove', async function () {
-  await ReviewModel.calculateAverageRating(this.product); // we are pointing product id in schema, called product- see line 26
+  await this.constructor.calculateAverageRating(this.product); // we are pointing product id in schema, called product- see line 26
 });
 
-module.exports = ReviewModel
+module.exports = mongoose.model('Review', ReviewSchema);
+
+
+
+//2 OPTION // but mongoose can complain bcs he doesn’t like it if we define middleware after defining the model
+// const ReviewModel = mongoose.model('Review', ReviewSchema);
+
+// ReviewSchema.post('save', async function () {
+//   await ReviewModel.calculateAverageRating(this.product); //with this. we access actual schema // AKOSREVIEW this == this instance
+// });
+
+
+// ReviewSchema.post('remove', async function () {
+//   await ReviewModel.calculateAverageRating(this.product); // we are pointing product id in schema, called product- see line 26
+// });
+
+// module.exports = ReviewModel
 
 
 
