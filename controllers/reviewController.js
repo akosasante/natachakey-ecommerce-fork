@@ -90,7 +90,7 @@ if (!review) {
 checkPermissions(req.user, review.user);
 review.rating = req.body.hasOwnProperty('rating') ? req.body.rating : review.rating
 review.title = req.body.hasOwnProperty('title') ? req.body.title : review.title
-review.comment = req.body.hasOwnProperty('comment') ? req.body.rating : review.comment
+review.comment = req.body.hasOwnProperty('comment') ? req.body.comment : review.comment
 
 await review.save();
 res.status(StatusCodes.OK).json({ review });
