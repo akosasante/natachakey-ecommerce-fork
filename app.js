@@ -37,7 +37,10 @@ app.use(
 );
 
 app.use(helmet());
-app.use(cors({ origin: ["http://localhost:3000", "https://react-nodejs-ecommerce.netlify.app/"], credentials: true })); //CHAGE TO REAL URL ON NETLIFY
+app.use(cors({
+  origin: ['http://localhost:3000', "https://react-nodejs-ecommerce.netlify.app/"],
+  credentials: true,
+}));
 app.use(xss());
 app.use(mongoSanitize());
 
@@ -46,11 +49,6 @@ app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET)); //access cookies coming back from the browser- with each request the browser will send cookie + we're signing cookies with jwt secret
 app.use(express.static('./public', { extensions: ['html'] })); // a way for /docs to work being served from public folder instead of needing its own dedicated route definition (also fix issue with js not working)
 app.use(fileUpload());
-
-
-app.get('/browser-app.js', (req, res) => {
-  res.sendFile(path.join(__dirname, 'browser-app.js'));
-});
 
 // //testing in postman if the token is stored in a cookie
 // app.get('/api/v1', (req, res) => {
