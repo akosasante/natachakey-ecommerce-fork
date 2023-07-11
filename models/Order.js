@@ -17,18 +17,22 @@ const OrderSchema = mongoose.Schema(
     tax: {
       type: Number,
       required: true,
+      min: 0,
     },
     shippingFee: {
       type: Number,
       required: true,
+      min: 0,
     },
     subtotal: {
       type: Number,
       required: true,
+      min: 0,
     },
     total: {
       type: Number,
       required: true,
+      min: 0,
     },
 
     orderItems: [SingleOrderItemSchema],

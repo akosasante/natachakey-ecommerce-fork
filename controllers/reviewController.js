@@ -80,7 +80,7 @@ const updateReview = async (req, res) => {
 
 //OPTION 2
 const { id: reviewId } = req.params; //TAKE ID FROM REQ.PARAMS AND ASSIGN IT TO REVIEWiD  
-const { rating, title, comment } = req.body;
+
 const review = await Review.findOne({ _id: reviewId });
 
 if (!review) {
@@ -88,9 +88,16 @@ if (!review) {
 }
 
 checkPermissions(req.user, review.user);
-review.rating = req.body.hasOwnProperty('rating') ? req.body.rating : review.rating
-review.title = req.body.hasOwnProperty('title') ? req.body.title : review.title
-review.comment = req.body.hasOwnProperty('comment') ? req.body.comment : review.comment
+// can simplify with: review.rating = req.body?.rating || review.rating (but hasOwnProperty is better because then that allows us to send/unset values like this: {rating: null})
+review.rating = req.body.hasOwnProperty('rating')
+? req.body.rating
+: review.rating;
+review.title = req.body.hasOwnProperty('title')
+? req.body.title
+: review.title;
+review.comment = req.body.hasOwnProperty('comment')
+? req.body.comment
+: review.comment;
 
 await review.save();
 res.status(StatusCodes.OK).json({ review });

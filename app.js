@@ -37,15 +37,20 @@ app.use(
 );
 
 app.use(helmet());
-app.use(cors({ origin: ["http://localhost:3000", "https://deployed_to_netlify_url.com"], credentials: true })); //CHAGE TO REAL URL ON NETLIFY
+app.use(cors({ origin: ["http://localhost:3000", "https://react-nodejs-ecommerce.netlify.app/"], credentials: true })); //CHAGE TO REAL URL ON NETLIFY
 app.use(xss());
 app.use(mongoSanitize());
 
-//app.use(morgan('tiny')); //log  in terminal every request methode + statuscode
+app.use(morgan('tiny')); //log  in terminal every request methode + statuscode
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET)); //access cookies coming back from the browser- with each request the browser will send cookie + we're signing cookies with jwt secret
-app.use(express.static('./public'));
+app.use(express.static('./public', { extensions: ['html'] })); // a way for /docs to work being served from public folder instead of needing its own dedicated route definition (also fix issue with js not working)
 app.use(fileUpload());
+
+
+app.get('/browser-app.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'browser-app.js'));
+});
 
 // //testing in postman if the token is stored in a cookie
 // app.get('/api/v1', (req, res) => {
@@ -54,9 +59,9 @@ app.use(fileUpload());
 //   res.send('ecommerce api');
 // });
 
-app.get('/docs', (req, res) => {
-  res.sendFile(path.join(__dirname, 'docs.html'));
-});
+// app.get('/docs', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'docs.html'));
+// }); // Could get this with just the public folder
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);

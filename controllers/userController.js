@@ -38,8 +38,20 @@ const updateUser = async (req, res) => {
   }
 
   const user = await User.findOne({ _id: req.user.userId }); //get user
-  user.email = email; //update properties manually 
-  user.name = name;
+// Update email if request included a non-null value, otherwise keep the email as-is
+user.email = email || user.email
+
+// Update name if request included a non-null value, otherwise keep the name as-is
+user.name = name || user.name
+
+// Another way we could write these:
+// if (email) {
+//   user.email = email
+// }
+
+// if (name) {
+//   user.name = name
+// }
 
   await user.save(); // using pre save hook (see user model) to save updated user
   //BUT when we invoke the hook- we hash the password one more time - and we get in    console.log('hey there') or console.log(this.modifiedPaths());; -line 35 user model

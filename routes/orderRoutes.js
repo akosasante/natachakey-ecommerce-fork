@@ -10,7 +10,7 @@ const {
   getSingleOrder,
   getCurrentUserOrders,
   createOrder,
-  updateOrder,
+  updatePaymentStatus ,
 } = require('../controllers/orderController');
 
 router
@@ -23,6 +23,9 @@ router.route('/showAllMyOrders').get(authenticateUser, getCurrentUserOrders);
 router
   .route('/:id')
   .get(authenticateUser, getSingleOrder)
-  .patch(authenticateUser, updateOrder);
+  .patch(authenticateUser,  updatePaymentStatus );
 
+  router
+  .route('/:id/pay')
+  .patch(authenticateUser,  updatePaymentStatus );
 module.exports = router;
