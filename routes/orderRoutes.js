@@ -6,10 +6,6 @@ const {
 } = require('../middleware/authentication');
 
 const {
-  checkPermissions,
-} = require('../middleware/checkPermissions');
-
-const {
   getAllOrders,
   getSingleOrder,
   getCurrentUserOrders,
@@ -26,10 +22,10 @@ router.route('/showAllMyOrders').get(authenticateUser, getCurrentUserOrders);
 
 router
   .route('/:id')
-  .get(authenticateUser,checkPermissions, getSingleOrder)
-  .patch(authenticateUser, checkPermissions, updatePaymentStatus );
+  .get(authenticateUser, getSingleOrder)
+  .patch(authenticateUser,  updatePaymentStatus );
 
   router
   .route('/:id/pay')
-  .patch(authenticateUser, checkPermissions, updatePaymentStatus );
+  .patch(authenticateUser,  updatePaymentStatus );
 module.exports = router;

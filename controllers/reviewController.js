@@ -2,7 +2,7 @@ const Review = require('../models/Review');
 const Product = require('../models/Product');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-//const { checkPermissions } = require('../utils');
+const { checkPermissions } = require('../utils');
 
 const createReview = async (req, res) => {
   //in req.body (f.ex. on the frontend) we MUST PROVIDE which product we are requesting- "product": "647e247e69c32ece45e23978",
@@ -87,7 +87,7 @@ if (!review) {
   throw new CustomError.NotFoundError(`No review with id ${reviewId}`);
 }
 
-//checkPermissions(req.user, review.user);
+checkPermissions(req.user, review.user);
 // can simplify with: review.rating = req.body?.rating || review.rating (but hasOwnProperty is better because then that allows us to send/unset values like this: {rating: null})
 review.rating = req.body.hasOwnProperty('rating')
 ? req.body.rating
@@ -153,7 +153,7 @@ const deleteReview = async (req, res) => {
   //only admin and user that created this post can delete it -see this fn in  checkPermissions.js
   //console.log(review);// logs the whole  review object
   //console.log(review.user);// logs user property of the  review object (see Schema Review.js line 21-  type: mongoose.Schema.ObjectId, and it logs in the console : new ObjectId("647dcc71ffdc226f332b784e") )
-  //checkPermissions(req.user, review.user); //here we pass  parameters (requestUser, resourceUserId) = (who is doing actual request -here req.user, then we compare it with the id of the user that created this review
+  checkPermissions(req.user, review.user); //here we pass  parameters (requestUser, resourceUserId) = (who is doing actual request -here req.user, then we compare it with the id of the user that created this review
   await review.remove();
   res.status(StatusCodes.OK).json({ msg: 'Success! Review removed' });
 };

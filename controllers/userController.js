@@ -1,8 +1,7 @@
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-const { createTokenUser, attachCookiesToResponse } = require('../utils');
-//const { createTokenUser, attachCookiesToResponse, checkPermissions } = require('../utils');
+const { createTokenUser, attachCookiesToResponse, checkPermissions } = require('../utils');
 
 // only admins should be able to see all users + we remove password from the response
 const getAllUsers = async (req, res) => {
@@ -17,7 +16,7 @@ const getSingleUser = async (req, res) => {
     if (!user) {
       throw new CustomError.NotFoundError(`No user with id : ${req.params.id}`);
     }
-    //checkPermissions(req.user, user._id) //we pass user object that is in the request and id property  in a database of the user we are requesting - see line 15
+    checkPermissions(req.user, user._id) //we pass user object that is in the request and id property  in a database of the user we are requesting - see line 15
     res.status(StatusCodes.OK).json({ user });
   };
 

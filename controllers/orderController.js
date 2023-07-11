@@ -3,7 +3,7 @@ const Order = require('../models/Order');
 const Product = require('../models/Product');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-//const { checkPermissions } = require('../utils');
+const { checkPermissions } = require('../utils');
 
 const fakeStripeAPI = async ({ amount, currency }) => {
   const client_secret = 'someRandomValue';
@@ -181,7 +181,7 @@ const getSingleOrder = async (req, res) => {
   if (!order) {
     throw new CustomError.NotFoundError(`No order with id ${orderId}`);
   }
- // checkPermissions(req.user, order.user);
+  checkPermissions(req.user, order.user);
   res.status(StatusCodes.OK).json({ order });
 };
 
@@ -197,7 +197,7 @@ const updatePaymentStatus = async (req, res) => {
   if (!order) {
     throw new CustomError.NotFoundError(`No order with id ${orderId}`);
   }
-  //checkPermissions(req.user, order.user); // only admin or proper user can update order
+  checkPermissions(req.user, order.user); // only admin or proper user can update order
 
   order.paymentIntentId = paymentIntentId;
   order.status = 'paid';
