@@ -1,7 +1,8 @@
 const User = require('../models/User');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
-const { createTokenUser, attachCookiesToResponse, checkPermissions } = require('../utils');
+const { createTokenUser, attachCookiesToResponse } = require('../utils');
+//const { createTokenUser, attachCookiesToResponse, checkPermissions } = require('../utils');
 
 // only admins should be able to see all users + we remove password from the response
 const getAllUsers = async (req, res) => {
@@ -16,7 +17,7 @@ const getSingleUser = async (req, res) => {
     if (!user) {
       throw new CustomError.NotFoundError(`No user with id : ${req.params.id}`);
     }
-    checkPermissions(req.user, user._id) //we pass user object that is in the request and id property  in a database of the user we are requesting - see line 15
+    //checkPermissions(req.user, user._id) //we pass user object that is in the request and id property  in a database of the user we are requesting - see line 15
     res.status(StatusCodes.OK).json({ user });
   };
 
@@ -38,8 +39,20 @@ const updateUser = async (req, res) => {
   }
 
   const user = await User.findOne({ _id: req.user.userId }); //get user
-  user.email = email; //update properties manually 
-  user.name = name;
+// Update email if request included a non-null value, otherwise keep the email as-is
+user.email = email || user.email
+
+// Update name if request included a non-null value, otherwise keep the name as-is
+user.name = name || user.name
+
+// Another way we could write these:
+// if (email) {
+//   user.email = email
+// }
+
+// if (name) {
+//   user.name = name
+// }
 
   await user.save(); // using pre save hook (see user model) to save updated user
   //BUT when we invoke the hook- we hash the password one more time - and we get in    console.log('hey there') or console.log(this.modifiedPaths());; -line 35 user model

@@ -6,6 +6,10 @@ const {
 } = require('../middleware/authentication');
 
 const {
+  checkPermissions,
+} = require('../middleware/checkPermissions');
+
+const {
   getAllUsers,
   getSingleUser,
   showCurrentUser,
@@ -18,9 +22,9 @@ router
   .get(authenticateUser, authorizePermissions('admin'), getAllUsers);
 
 router.route('/showMe').get(authenticateUser, showCurrentUser);
-router.route('/updateUser').patch(authenticateUser, updateUser);
-router.route('/updateUserPassword').patch(authenticateUser, updateUserPassword);
+router.route('/updateUser').patch(authenticateUser, checkPermissions, updateUser);
+router.route('/updateUserPassword').patch(authenticateUser, checkPermissions, updateUserPassword);
 
-router.route('/:id').get(authenticateUser, getSingleUser);
+router.route('/:id').get(authenticateUser,checkPermissions, getSingleUser);
 
 module.exports = router;

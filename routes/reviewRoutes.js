@@ -3,6 +3,10 @@ const router = express.Router();
 const { authenticateUser } = require('../middleware/authentication');
 
 const {
+  checkPermissions,
+} = require('../middleware/checkPermissions');
+
+const {
   createReview,
   getAllReviews,
   getSingleReview,
@@ -15,7 +19,7 @@ router.route('/').post(authenticateUser, createReview).get(getAllReviews);
 router
   .route('/:id')
   .get(getSingleReview)
-  .patch(authenticateUser, updateReview)
-  .delete(authenticateUser, deleteReview);
+  .patch(authenticateUser, checkPermissions, updateReview)
+  .delete(authenticateUser, checkPermissions, deleteReview);
 
 module.exports = router;
