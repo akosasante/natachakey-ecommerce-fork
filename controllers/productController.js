@@ -77,9 +77,9 @@ const uploadImage = async (req, res) => {
   console.log('IMAGEPATH: ', imagePath);
   console.log('DIRNAME: ', __dirname);
   console.log('PWD: ', process.cwd());
-  console.log('ls: ', readdirSync('../'));
-  console.log('ls: ', readdirSync('../public'));
-  console.log('ls: ', readdirSync('../public/uploads'));
+  console.log('ls: ', readdirSync('./'));
+  console.log('ls: ', readdirSync('./public'));
+  console.log('ls: ', readdirSync('./public/uploads'));
 
   await productImage.mv(imagePath);
   res.status(StatusCodes.OK)
