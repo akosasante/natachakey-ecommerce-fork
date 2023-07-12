@@ -65,16 +65,21 @@ const uploadImage = async (req, res) => {
 
   if (productImage.size > maxSize) {
     throw new CustomError.BadRequestError(
-      'Please upload image smaller than 1MB'
+      'Please upload image smaller than 1MB',
     );
   }
 
   const imagePath = path.join(
     __dirname,
-    '../public/uploads/' + `${productImage.name}`
+    '../public/uploads/' + `${productImage.name}`,
   );
+  console.log('IMAGEPATH: ', imagePath);
+  console.log('DIRNAME: ', __dirname);
+
   await productImage.mv(imagePath);
-  res.status(StatusCodes.OK).json({ image: `https://ecommerce-6kwa.onrender.com/uploads/${productImage.name}` });
+  res.status(StatusCodes.OK)
+    .json(
+      { image: `https://test-ecommerce-akos-99.onrender.com/uploads/${productImage.name}` });
   //res.status(StatusCodes.OK).json({ image: `/uploads/${productImage.name}` });
 };
 
