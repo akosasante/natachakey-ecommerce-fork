@@ -2,6 +2,7 @@ const Product = require('../models/Product');
 const { StatusCodes } = require('http-status-codes');
 const CustomError = require('../errors');
 const path = require('path');
+const { readdirSync } = require('fs');
 
 const createProduct = async (req, res) => {
   req.body.user = req.user.userId; // req.body.user - user is required to be provided (see Product.js line 58) and is set to req.user.userId
@@ -76,6 +77,9 @@ const uploadImage = async (req, res) => {
   console.log('IMAGEPATH: ', imagePath);
   console.log('DIRNAME: ', __dirname);
   console.log('PWD: ', process.cwd());
+  console.log('ls: ', readdirSync('../'));
+  console.log('ls: ', readdirSync('../public'));
+  console.log('ls: ', readdirSync('../public/uploads'));
 
   await productImage.mv(imagePath);
   res.status(StatusCodes.OK)
